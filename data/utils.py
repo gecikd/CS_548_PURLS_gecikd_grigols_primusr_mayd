@@ -22,12 +22,34 @@ def joint_interpolate(x):
     x2 =x2.numpy()
     return x2
 
+import os
+import numpy as np
+
 def load_labels(root, split, dataloader, model_name):
-    cls_num = int(dataloader.split('_')[-1])
+    if dataloader is None:
+        raise ValueError("The 'dataloader' parameter is None. Please provide a valid dataloader string.")
+    
+    try:
+        cls_num = int(dataloader.split('_')[-1])
+    except (ValueError, IndexError):
+        raise ValueError("The 'dataloader' parameter does not contain a valid class number.")
+
     emb_dim = 512
-    unseen_inds = np.load(os.path.join(root, 'resources/label_splits/r')+'u'+str(split)+'.npy')
-    seen_inds = np.load(os.path.join(root, 'resources/label_splits/r')+'s'+str(cls_num - split)+'.npy')
+    
+    unseen_inds_path = os.path.join(root, f'resources/label_splits/ru{split}.npy')
+    seen_inds_path = os.path.join(root, f'resources/label_splits/rs{cls_num - split}.npy')
 
-    cls_labels = np.load(os.path.join(root, 'resources/ntu{}_bpnames.npy'.format(cls_num)),allow_pickle=True)
-
+    try:
+        unseen_inds = np.load(unseen_inds_path)
+        seen_inds = np.load(seen_inds_path)
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Required file not found: {e.filename}")
+    
+    cls_labels_path = os.path.join(root, f'resources/ntu{cls_num}_bpnames.npy')
+    
+    try:
+        cls_labels = np.load(cls_labels_path, allow_pickle=True)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Class labels file not found: {cls_labels_path}")
+    
     return cls_num, emb_dim, unseen_inds, seen_inds, cls_labels
