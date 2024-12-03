@@ -1,5 +1,21 @@
 # PURLS
 
+## Fork Info
+This is a fork created for a CS548 class project at SUNY Polytechnic Institute.
+
+Members working on the project:
+
+    Destin Gecik
+    Sam Grigoli
+    Dillon May
+    Ryan Primus
+    
+No new dataset was used.
+
+Minimal progress made in running the experiments described from the original repo.
+
+No new software/environment setup.
+
 ## Introduction
 This repository is prepared to provide the code resource for the paper:
 
